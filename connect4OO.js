@@ -13,12 +13,16 @@ class Game {
       this.board.push(Array.from({ length: this.width }));
     }
   }
+  
   makeHtmlBoard() {
     const htmlBoard = document.getElementById('board');
   
     // make column tops (clickable area for adding a piece to that column)
     const top = document.createElement('tr');
     top.setAttribute('id', 'column-top');
+
+    // this.handleGameClick = this.handleClick.bind(this);
+
     top.addEventListener('click', this.handleClick);
   
     for (let x = 0; x < this.width; x++) {
@@ -55,11 +59,17 @@ class Game {
   placeInTable(y, x) {
     const piece = document.createElement('div');
     piece.classList.add('piece');
-    piece.classList.add(`p${currPlayer}`);
+    piece.classList.add(`p${this.currPlayer}`);
     piece.style.top = -50 * (y + 2);
   
     const spot = document.getElementById(`${y}-${x}`);
     spot.append(piece);
+  }
+
+  endGame(msg) {
+    alert(msg);
+    // const top = document.querySelector("#column-top");
+    // top.removeEventListener("click", this.handleGameClick);
   }
 
   handleClick(evt) {
@@ -68,7 +78,6 @@ class Game {
     console.log('x from handleClick', x);
     
     // get next spot in column (if none, ignore click)
-    console.log('what is this from line 71', this)
     const y = this.findSpotForCol(x);
     if (y === null) {
       return;
@@ -91,6 +100,7 @@ class Game {
     // switch players
     this.currPlayer = this.currPlayer === 1 ? 2 : 1;
   }
+  
   checkForWin() {
     const _win = (cells) => {
       // Check four cells to see if they're all color of current player
