@@ -16,14 +16,16 @@ class Game {
   
   makeHtmlBoard() {
     const htmlBoard = document.getElementById('board');
+    // clear board before new board
+    htmlBoard.innerHTML = "";
   
     // make column tops (clickable area for adding a piece to that column)
     const top = document.createElement('tr');
     top.setAttribute('id', 'column-top');
 
-    // this.handleGameClick = this.handleClick.bind(this);
+    this.handleGameClick = this.handleClick.bind(this);
 
-    top.addEventListener('click', this.handleClick);
+    top.addEventListener('click', this.handleGameClick);
   
     for (let x = 0; x < this.width; x++) {
       const headCell = document.createElement('td');
@@ -67,9 +69,11 @@ class Game {
   }
 
   endGame(msg) {
-    alert(msg);
-    // const top = document.querySelector("#column-top");
-    // top.removeEventListener("click", this.handleGameClick);
+    setTimeout(function() {
+      alert(msg);
+    }, 1000)
+    const top = document.querySelector("#column-top");
+    top.removeEventListener("click", this.handleGameClick);
   }
 
   handleClick(evt) {
@@ -89,7 +93,7 @@ class Game {
     
     // check for win
     if (this.checkForWin()) {
-      return this.endGame(`Player ${currPlayer} won!`);
+      return this.endGame(`Player ${this.currPlayer} won!`);
     }
     
     // check for tie
@@ -135,7 +139,22 @@ class Game {
   }
 }
 
-let game = new Game(6,7);
+class Player {
+  constructor(player1, player2) {
+    this.player1 = player1;
+    this.player2 = player2;
+  }
+}
 
+// let game = new Game(6,7);
 
+const startBtn = document.querySelector("#start-btn");
+const pColor1 = document.getElementById("pcolor1").value;
+const pColor2 = document.getElementById("pcolor2").value;
+
+startBtn.addEventListener("click", function(evt) {
+  evt.preventDefault();
+  new Game(6,7);
+  new Player(pColor1, pColor2);
+})
 
