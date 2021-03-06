@@ -1,12 +1,14 @@
 class Game {
-  constructor(height, width) {
+  constructor(pColor1, pColor2, height = 6, width = 7) {
     this.height = height;
     this.width = width;
     this.board = [];
+    this.players = [pColor1, pColor2];
     this.currPlayer = 1;
     // runs by itself if placed here 
     this.makeBoard();
     this.makeHtmlBoard();
+    this.gameOver = false;
   }
   makeBoard() {
     for (let y = 0; y < this.height; y++) {
@@ -61,7 +63,7 @@ class Game {
   placeInTable(y, x) {
     const piece = document.createElement('div');
     piece.classList.add('piece');
-    piece.classList.add(`p${this.currPlayer}`);
+    piece.style.backgroundColor = this.currPlayer.color;
     piece.style.top = -50 * (y + 2);
   
     const spot = document.getElementById(`${y}-${x}`);
@@ -93,7 +95,8 @@ class Game {
     
     // check for win
     if (this.checkForWin()) {
-      return this.endGame(`Player ${this.currPlayer} won!`);
+      this.gameOver = true;
+      return this.endGame(`Player ${this.currPlayer.color} won!`);
     }
     
     // check for tie
@@ -102,7 +105,9 @@ class Game {
     }
       
     // switch players
-    this.currPlayer = this.currPlayer === 1 ? 2 : 1;
+    // this.currPlayer = this.currPlayer === 1 ? 2 : 1;
+    this.currPlayer =
+      this.currPlayer === this.players[0] ? this.players[1] : this.players[0];
   }
   
   checkForWin() {
@@ -140,21 +145,17 @@ class Game {
 }
 
 class Player {
-  constructor(player1, player2) {
-    this.player1 = player1;
-    this.player2 = player2;
+  constructor(color) {
+    this.color = color;
   }
 }
 
 // let game = new Game(6,7);
 
-const startBtn = document.querySelector("#start-btn");
-const pColor1 = document.getElementById("pcolor1").value;
-const pColor2 = document.getElementById("pcolor2").value;
-
-startBtn.addEventListener("click", function(evt) {
+document.querySelector("#start-btn").addEventListener("click", (evt) => {
   evt.preventDefault();
-  new Game(6,7);
-  new Player(pColor1, pColor2);
-})
+  let pColor1 = new Player(document.getElementById("pcolor1").value);
+  let pColor2 = new Player(document.getElementById("pcolor2").value);
+  new Game(pColor1, pColor2); 
+});
 
